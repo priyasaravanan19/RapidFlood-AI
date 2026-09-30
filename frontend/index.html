@@ -1,0 +1,3227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RapidFlood AI | Disaster Risk Analysis</title>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-water"></i>
+                </div>
+
+                <div>
+                    <h1>RapidFlood</h1>
+                    <span>AI</span>
+                </div>
+            </div>
+
+            <div class="sidebar-title">
+                DISASTER MANAGEMENT
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#" class="nav-item" data-section="flood-analysis">
+                    <i class="fa-solid fa-satellite"></i>
+                    <span>Flood Analysis</span>
+                </a>
+
+                <a href="#" class="nav-item" data-section="flood-map">
+                    <i class="fa-solid fa-map"></i>
+                    <span>Flood Map</span>
+                </a>
+
+                <a href="#" class="nav-item" data-section="settlements">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Settlements</span>
+                </a>
+
+                <a href="#" class="nav-item" data-section="roads">
+                    <i class="fa-solid fa-road"></i>
+                    <span>Roads</span>
+                </a>
+
+                <a href="#" class="nav-item" data-section="agriculture">
+                    <i class="fa-solid fa-wheat-awn"></i>
+                    <span>Agriculture</span>
+                </a>
+
+                <a href="#" class="nav-item" data-section="reports">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Reports</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+
+                <div class="system-status">
+                    <div class="status-dot"></div>
+
+                    <div>
+                        <strong>System Online</strong>
+                        <span>Ready for analysis</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ================= MAIN ================= -->
+
+        <main class="main-content">
+
+            <!-- TOP BAR -->
+            <header class="topbar">
+
+                <div>
+                    <p class="breadcrumb">
+                        Disaster Management
+                        <span>/</span> Rapid Flood Mapping
+                    </p>
+
+                    <h2>Rapid Flood Mapping</h2>
+                    <p class="page-description">
+                        Sentinel-1 based automated flood risk analysis
+                    </p>
+                </div>
+
+                <div class="topbar-status">
+                    <span class="online-dot"></span> System Ready
+                </div>
+
+            </header>
+
+
+            <!-- ================= DASHBOARD ================= -->
+
+            <section id="dashboard" class="page-section active-section">
+
+                <!-- INPUT CARD -->
+
+                <div class="input-card">
+
+                    <div class="section-heading">
+
+                        <div class="heading-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div>
+                            <h3>Flood Analysis Request</h3>
+                            <p>
+                                Enter the affected location and flood event date. Sentinel-1 imagery will be used for comparison.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="input-grid">
+
+                        <!-- LOCATION -->
+
+                        <div class="form-group">
+
+                            <label for="location">
+                            <i class="fa-solid fa-location-dot"></i>
+                            Location
+                        </label>
+
+                            <div class="input-wrapper">
+
+                                <i class="fa-solid fa-map-marker-alt"></i>
+
+                                <input type="text" id="location" placeholder="Enter location e.g. Chennai, Tamil Nadu">
+
+                            </div>
+
+                            <small>
+                            Enter city, district or affected region
+                        </small>
+
+                        </div>
+
+
+                        <!-- DATE -->
+
+                        <div class="form-group">
+
+                            <label for="floodDate">
+                            <i class="fa-regular fa-calendar"></i>
+                            Flood Event Date
+                        </label>
+
+                            <div class="input-wrapper">
+
+                                <i class="fa-regular fa-calendar"></i>
+
+                                <input type="date" id="floodDate">
+
+                            </div>
+
+                            <small>
+                            Date when flooding occurred
+                        </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <button id="analyzeBtn" class="analyze-btn">
+
+                    <i class="fa-solid fa-satellite"></i>
+
+                    Analyze Flood Area
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+                </div>
+
+
+                <!-- ================= INITIAL MESSAGE ================= -->
+
+                <div id="initialState" class="initial-state">
+
+                    <div class="initial-icon">
+                        <i class="fa-solid fa-earth-asia"></i>
+                    </div>
+
+                    <h3>Ready for Flood Analysis</h3>
+
+                    <p>
+                        Enter a location and flood event date above to generate the flood impact analysis.
+                    </p>
+
+                </div>
+
+
+                <!-- ================= RESULTS ================= -->
+
+                <div id="resultsSection" class="results-section hidden">
+
+                    <div class="results-header">
+
+                        <div>
+                            <span class="result-label">
+                            ANALYSIS RESULT
+                        </span>
+
+                            <h3 id="resultLocation">
+                                Chennai, Tamil Nadu
+                            </h3>
+
+                            <p>
+                                Flood event:
+                                <strong id="resultDate">
+                                -
+                            </strong>
+                            </p>
+                        </div>
+
+                        <div class="analysis-badge">
+                            <i class="fa-solid fa-check"></i> Analysis Complete
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= STAT CARDS ================= -->
+
+                    <div class="stats-grid">
+
+                        <div class="stat-card flood-area">
+
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-water"></i>
+                            </div>
+
+                            <div>
+                                <span>Affected Area</span>
+                                <strong id="affectedArea">
+                                0 km²
+                            </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon settlement-icon">
+                                <i class="fa-solid fa-house"></i>
+                            </div>
+
+                            <div>
+                                <span>Affected Settlements</span>
+                                <strong id="settlementCount">
+                                0
+                            </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon road-icon">
+                                <i class="fa-solid fa-road"></i>
+                            </div>
+
+                            <div>
+                                <span>Affected Roads</span>
+                                <strong id="roadCount">
+                                0 km
+                            </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon agriculture-icon">
+                                <i class="fa-solid fa-wheat-awn"></i>
+                            </div>
+
+                            <div>
+                                <span>Affected Agriculture</span>
+                                <strong id="agricultureArea">
+                                0 km²
+                            </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= MAP COMPARISON ================= -->
+
+                    <div class="map-section">
+
+                        <div class="section-title">
+
+                            <div>
+                                <h3>
+                                    <i class="fa-solid fa-map"></i> Flood Map Comparison
+                                </h3>
+
+                                <p>
+                                    Before and after flood conditions
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="map-grid">
+
+                            <!-- BEFORE MAP -->
+
+                            <div class="map-card">
+
+                                <div class="map-header">
+
+                                    <div>
+                                        <h4>Before Flood</h4>
+                                        <span>
+                                        Pre-flood satellite condition
+                                    </span>
+                                    </div>
+
+                                    <span class="map-badge before">
+                                    BEFORE
+                                </span>
+
+                                </div>
+
+                                <div id="beforeMap" class="map"></div>
+
+                            </div>
+
+
+                            <!-- AFTER MAP -->
+
+                            <div class="map-card">
+
+                                <div class="map-header">
+
+                                    <div>
+                                        <h4>After Flood</h4>
+                                        <span>
+                                        Detected flood extent
+                                    </span>
+                                    </div>
+
+                                    <span class="map-badge after">
+                                    FLOOD
+                                </span>
+
+                                </div>
+
+                                <div id="afterMap" class="map"></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= IMPACT ANALYSIS ================= -->
+
+                    <div class="impact-section">
+
+                        <div class="section-title">
+
+                            <div>
+                                <h3>
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Flood Impact Analysis
+                                </h3>
+
+                                <p>
+                                    Estimated affected infrastructure and land
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="impact-grid">
+
+                            <!-- SETTLEMENT -->
+
+                            <div class="impact-card">
+
+                                <div class="impact-card-header">
+
+                                    <div class="impact-icon settlement">
+                                        <i class="fa-solid fa-house"></i>
+                                    </div>
+
+                                    <div>
+                                        <h4>Settlements</h4>
+                                        <span>Potentially affected</span>
+                                    </div>
+
+                                </div>
+
+                                <div class="impact-value">
+                                    <strong id="settlementValue">
+                                    0
+                                </strong>
+
+                                    <span>
+                                    settlements
+                                </span>
+                                </div>
+
+                                <div class="progress">
+                                    <div id="settlementProgress" class="progress-bar" style="width:0%">
+                                    </div>
+                                </div>
+
+                                <p>
+                                    Residential areas within detected flood extent
+                                </p>
+
+                            </div>
+
+
+                            <!-- ROADS -->
+
+                            <div class="impact-card">
+
+                                <div class="impact-card-header">
+
+                                    <div class="impact-icon roads">
+                                        <i class="fa-solid fa-road"></i>
+                                    </div>
+
+                                    <div>
+                                        <h4>Road Network</h4>
+                                        <span>Potentially affected</span>
+                                    </div>
+
+                                </div>
+
+                                <div class="impact-value">
+
+                                    <strong id="roadValue">
+                                    0
+                                </strong>
+
+                                    <span>
+                                    km
+                                </span>
+
+                                </div>
+
+                                <div class="progress">
+
+                                    <div id="roadProgress" class="progress-bar" style="width:0%">
+                                    </div>
+
+                                </div>
+
+                                <p>
+                                    Roads intersecting detected flood zones
+                                </p>
+
+                            </div>
+
+
+                            <!-- AGRICULTURE -->
+
+                            <div class="impact-card">
+
+                                <div class="impact-card-header">
+
+                                    <div class="impact-icon agriculture">
+                                        <i class="fa-solid fa-wheat-awn"></i>
+                                    </div>
+
+                                    <div>
+                                        <h4>Agricultural Land</h4>
+                                        <span>Potentially affected</span>
+                                    </div>
+
+                                </div>
+
+                                <div class="impact-value">
+
+                                    <strong id="agricultureValue">
+                                    0
+                                </strong>
+
+                                    <span>
+                                    km²
+                                </span>
+
+                                </div>
+
+                                <div class="progress">
+
+                                    <div id="agricultureProgress" class="progress-bar" style="width:0%">
+                                    </div>
+
+                                </div>
+
+                                <p>
+                                    Agricultural land within flood affected region
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= PROCESS INFORMATION ================= -->
+
+                    <div class="process-card">
+
+                        <div class="process-header">
+
+                            <div class="process-icon">
+                                <i class="fa-solid fa-satellite"></i>
+                            </div>
+
+                            <div>
+                                <h3>Sentinel-1 Analysis</h3>
+                                <p>
+                                    Automated pre-flood and post-flood comparison
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="process-steps">
+
+                            <div class="process-step completed">
+
+                                <div class="step-number">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Location identified</strong>
+                                    <span id="processLocation">
+                                    -
+                                </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="process-step completed">
+
+                                <div class="step-number">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Flood date selected</strong>
+                                    <span id="processDate">
+                                    -
+                                </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="process-step completed">
+
+                                <div class="step-number">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+
+                                <div>
+                                    <strong>SAR comparison</strong>
+                                    <span>
+                                    Pre-flood vs post-flood
+                                </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="process-step completed">
+
+                                <div class="step-number">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Impact detection</strong>
+                                    <span>
+                                    Settlements, roads & agriculture
+                                </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ================= OTHER SECTIONS ================= -->
+
+            <!-- =====================================================
+     FLOOD ANALYSIS PAGE
+===================================================== -->
+
+            <section id="flood-analysis" class="page-section flood-analysis-page">
+
+                <!-- PAGE HEADER -->
+
+                <div class="analysis-page-header">
+
+                    <div>
+                        <p class="breadcrumb">
+                            Disaster Management
+                            <span>/</span> Flood Analysis
+                        </p>
+
+                        <h2>Flood Analysis</h2>
+
+                        <p class="analysis-subtitle">
+                            Configure a Sentinel-1 based rapid flood mapping analysis
+                        </p>
+                    </div>
+
+                    <div class="analysis-status">
+                        <span class="analysis-status-dot"></span> Ready for Analysis
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         ANALYSIS CONFIGURATION
+    ================================================== -->
+
+                <div class="analysis-config-card">
+
+                    <div class="analysis-card-title">
+
+                        <div class="analysis-title-icon">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+
+                        <div>
+                            <h3>Analysis Configuration</h3>
+
+                            <p>
+                                Provide the location and flood event date to begin rapid flood mapping.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="analysis-form">
+
+                        <!-- LOCATION -->
+
+                        <div class="analysis-form-group">
+
+                            <label for="analysisLocation">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Analysis Location
+                </label>
+
+                            <div class="analysis-input">
+
+                                <i class="fa-solid fa-map-marker-alt"></i>
+
+                                <input type="text" id="analysisLocation" placeholder="Enter location e.g. Chennai, Tamil Nadu">
+
+                            </div>
+
+                            <span class="input-help">
+                    Enter the city, district or affected region.
+                </span>
+
+                        </div>
+
+
+                        <!-- DATE -->
+
+                        <div class="analysis-form-group">
+
+                            <label for="analysisDate">
+                    <i class="fa-regular fa-calendar"></i>
+                    Flood Event Date
+                </label>
+
+                            <div class="analysis-input">
+
+                                <i class="fa-regular fa-calendar"></i>
+
+                                <input type="date" id="analysisDate">
+
+                            </div>
+
+                            <span class="input-help">
+                    Select the date associated with the flood event.
+                </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ANALYZE BUTTON -->
+
+                    <div class="analysis-action">
+
+                        <button id="startAnalysisBtn" class="start-analysis-btn">
+
+                <i class="fa-solid fa-satellite"></i>
+
+                Start Flood Analysis
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         ANALYSIS PREVIEW
+    ================================================== -->
+
+                <div id="analysisPreview" class="analysis-preview hidden">
+
+                    <div class="preview-header">
+
+                        <div>
+
+                            <span class="preview-label">
+                    ANALYSIS REQUEST
+                </span>
+
+                            <h3 id="previewLocation">
+                                -
+                            </h3>
+
+                            <p>
+                                Flood event date:
+                                <strong id="previewDate">-</strong>
+                            </p>
+
+                        </div>
+
+                        <div class="preview-ready">
+                            <i class="fa-solid fa-circle-check"></i> Configuration Ready
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+             SATELLITE PROCESSING
+        ================================================== -->
+
+                    <div class="processing-card">
+
+                        <div class="processing-header">
+
+                            <div class="processing-icon">
+                                <i class="fa-solid fa-satellite"></i>
+                            </div>
+
+                            <div>
+
+                                <h3>Sentinel-1 Processing Pipeline</h3>
+
+                                <p>
+                                    The system will compare pre-flood and post-flood SAR observations.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="processing-flow">
+
+                            <!-- STEP 1 -->
+
+                            <div class="processing-step">
+
+                                <div class="processing-number">
+                                    01
+                                </div>
+
+                                <div class="processing-step-icon">
+                                    <i class="fa-solid fa-satellite"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Satellite Data</h4>
+
+                                    <p>
+                                        Select suitable Sentinel-1 observations
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flow-arrow">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </div>
+
+
+                            <!-- STEP 2 -->
+
+                            <div class="processing-step">
+
+                                <div class="processing-number">
+                                    02
+                                </div>
+
+                                <div class="processing-step-icon">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>SAR Processing</h4>
+
+                                    <p>
+                                        Prepare and compare radar imagery
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flow-arrow">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </div>
+
+
+                            <!-- STEP 3 -->
+
+                            <div class="processing-step">
+
+                                <div class="processing-number">
+                                    03
+                                </div>
+
+                                <div class="processing-step-icon">
+                                    <i class="fa-solid fa-water"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Flood Detection</h4>
+
+                                    <p>
+                                        Detect water expansion
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flow-arrow">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </div>
+
+
+                            <!-- STEP 4 -->
+
+                            <div class="processing-step">
+
+                                <div class="processing-number">
+                                    04
+                                </div>
+
+                                <div class="processing-step-icon">
+                                    <i class="fa-solid fa-chart-area"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Impact Analysis</h4>
+
+                                    <p>
+                                        Calculate affected areas
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+             EXPECTED OUTPUT
+        ================================================== -->
+
+                    <div class="expected-output-card">
+
+                        <div class="expected-output-header">
+
+                            <div class="output-icon">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+
+                            <div>
+
+                                <h3>Expected Analysis Output</h3>
+
+                                <p>
+                                    The completed analysis will generate the following results.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="output-grid">
+
+                            <!-- FLOOD MAP -->
+
+                            <div class="output-item">
+
+                                <div class="output-item-icon blue">
+                                    <i class="fa-solid fa-map"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Before / After Flood Map</h4>
+
+                                    <p>
+                                        Comparative visualization of pre-flood and post-flood conditions.
+                                    </p>
+
+                                </div>
+
+                                <span class="output-status">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+
+                            </div>
+
+
+                            <!-- AFFECTED AREA -->
+
+                            <div class="output-item">
+
+                                <div class="output-item-icon red">
+                                    <i class="fa-solid fa-water"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Affected Flood Area</h4>
+
+                                    <p>
+                                        Estimated area covered by newly detected flood water.
+                                    </p>
+
+                                </div>
+
+                                <span class="output-status">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+
+                            </div>
+
+
+                            <!-- SETTLEMENTS -->
+
+                            <div class="output-item">
+
+                                <div class="output-item-icon orange">
+                                    <i class="fa-solid fa-house"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Affected Settlements</h4>
+
+                                    <p>
+                                        Settlements located within the detected flood extent.
+                                    </p>
+
+                                </div>
+
+                                <span class="output-status">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+
+                            </div>
+
+
+                            <!-- ROADS -->
+
+                            <div class="output-item">
+
+                                <div class="output-item-icon purple">
+                                    <i class="fa-solid fa-road"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Affected Roads</h4>
+
+                                    <p>
+                                        Road segments intersecting the flood affected region.
+                                    </p>
+
+                                </div>
+
+                                <span class="output-status">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+
+                            </div>
+
+
+                            <!-- AGRICULTURE -->
+
+                            <div class="output-item">
+
+                                <div class="output-item-icon green">
+                                    <i class="fa-solid fa-wheat-awn"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Affected Agricultural Land</h4>
+
+                                    <p>
+                                        Agricultural areas falling inside the detected flood zone.
+                                    </p>
+
+                                </div>
+
+                                <span class="output-status">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+
+                            </div>
+
+
+                            <!-- AREA CALCULATION -->
+
+                            <div class="output-item">
+
+                                <div class="output-item-icon cyan">
+                                    <i class="fa-solid fa-ruler-combined"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Affected Area Calculation</h4>
+
+                                    <p>
+                                        Quantitative estimate of the total affected region.
+                                    </p>
+
+                                </div>
+
+                                <span class="output-status">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+             ANALYSIS NOTE
+        ================================================== -->
+
+                    <div class="analysis-note">
+
+                        <div class="note-icon">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>Analysis workflow</strong>
+
+                            <p>
+                                Location and date will be used to identify appropriate Sentinel-1 observations. The system will then perform SAR processing, detect water expansion and estimate the affected settlements, roads and agricultural land.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =====================================================
+     FLOOD MAP PAGE
+===================================================== -->
+
+            <section id="flood-map" class="page-section flood-map-page">
+
+                <!-- PAGE HEADER -->
+
+                <div class="flood-map-header">
+
+                    <div>
+
+                        <p class="breadcrumb">
+                            Disaster Management
+                            <span>/</span> Flood Map
+                        </p>
+
+                        <h2>Flood Map</h2>
+
+                        <p class="flood-map-subtitle">
+                            Interactive visualization of detected flood extent and affected areas.
+                        </p>
+
+                    </div>
+
+
+                    <div class="map-status">
+
+                        <span class="map-status-dot"></span> Flood Analysis Map
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         MAP INFORMATION BAR
+    ================================================== -->
+
+                <div class="map-info-bar">
+
+                    <div class="map-location-info">
+
+                        <div class="map-location-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Analysis Location</span>
+
+                            <strong id="mapLocation">
+                    Chennai, Tamil Nadu
+                </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="map-date-info">
+
+                        <div class="map-date-icon">
+                            <i class="fa-regular fa-calendar"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Flood Event Date</span>
+
+                            <strong id="mapDate">
+                    29 Sep 2026
+                </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="map-result-info">
+
+                        <div class="map-result-icon">
+                            <i class="fa-solid fa-water"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Detected Flood Area</span>
+
+                            <strong id="mapFloodArea">
+                    18.7 km²
+                </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         MAP TOOLBAR
+    ================================================== -->
+
+                <div class="map-toolbar">
+
+                    <div class="map-toolbar-left">
+
+                        <button id="beforeMapBtn" class="map-view-btn active">
+                <i class="fa-solid fa-image"></i>
+                Before Flood
+            </button>
+
+
+                        <button id="afterMapBtn" class="map-view-btn">
+                <i class="fa-solid fa-water"></i>
+                Flood Extent
+            </button>
+
+                    </div>
+
+
+                    <div class="map-toolbar-right">
+
+                        <button id="fitFloodBtn" class="map-tool-btn" title="Fit flood extent">
+                <i class="fa-solid fa-expand"></i>
+                Fit Flood Area
+            </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         MAIN MAP
+    ================================================== -->
+
+                <div class="main-flood-map-card">
+
+                    <div id="floodMap" class="main-flood-map"></div>
+
+
+                    <!-- MAP LEGEND -->
+
+                    <div class="flood-map-legend">
+
+                        <div class="legend-heading">
+                            Map Layers
+                        </div>
+
+
+                        <div class="flood-legend-item">
+
+                            <span class="legend-box flood-zone"></span>
+
+                            <span>
+                    Detected Flood Area
+                </span>
+
+                        </div>
+
+
+                        <div class="flood-legend-item">
+
+                            <span class="legend-box settlement-zone"></span>
+
+                            <span>
+                    Affected Settlements
+                </span>
+
+                        </div>
+
+
+                        <div class="flood-legend-item">
+
+                            <span class="legend-box road-zone"></span>
+
+                            <span>
+                    Affected Roads
+                </span>
+
+                        </div>
+
+
+                        <div class="flood-legend-item">
+
+                            <span class="legend-box agriculture-zone"></span>
+
+                            <span>
+                    Affected Agriculture
+                </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         LAYER CONTROLS
+    ================================================== -->
+
+                <div class="layer-control-card">
+
+                    <div class="layer-control-header">
+
+                        <div>
+
+                            <h3>
+                                <i class="fa-solid fa-layer-group"></i> Impact Layers
+                            </h3>
+
+                            <p>
+                                Select the information displayed on the map.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="layer-grid">
+
+                        <!-- FLOOD -->
+
+                        <label class="layer-option">
+
+                <input
+                    type="checkbox"
+                    id="floodLayerToggle"
+                    checked
+                >
+
+                <span class="custom-checkbox"></span>
+
+                <span class="layer-color flood-color"></span>
+
+                <span class="layer-text">
+
+                    <strong>Flood Extent</strong>
+
+                    <small>
+                        Detected water expansion
+                    </small>
+
+                </span>
+
+            </label>
+
+
+                        <!-- SETTLEMENT -->
+
+                        <label class="layer-option">
+
+                <input
+                    type="checkbox"
+                    id="settlementLayerToggle"
+                    checked
+                >
+
+                <span class="custom-checkbox"></span>
+
+                <span class="layer-color settlement-color"></span>
+
+                <span class="layer-text">
+
+                    <strong>Settlements</strong>
+
+                    <small>
+                        Potentially affected settlements
+                    </small>
+
+                </span>
+
+            </label>
+
+
+                        <!-- ROADS -->
+
+                        <label class="layer-option">
+
+                <input
+                    type="checkbox"
+                    id="roadLayerToggle"
+                    checked
+                >
+
+                <span class="custom-checkbox"></span>
+
+                <span class="layer-color road-color"></span>
+
+                <span class="layer-text">
+
+                    <strong>Roads</strong>
+
+                    <small>
+                        Roads intersecting flood zone
+                    </small>
+
+                </span>
+
+            </label>
+
+
+                        <!-- AGRICULTURE -->
+
+                        <label class="layer-option">
+
+                <input
+                    type="checkbox"
+                    id="agricultureLayerToggle"
+                    checked
+                >
+
+                <span class="custom-checkbox"></span>
+
+                <span class="layer-color agriculture-color"></span>
+
+                <span class="layer-text">
+
+                    <strong>Agricultural Land</strong>
+
+                    <small>
+                        Agricultural areas within flood zone
+                    </small>
+
+                </span>
+
+            </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         IMPACT SUMMARY
+    ================================================== -->
+
+                <div class="map-impact-summary">
+
+                    <div class="map-summary-header">
+
+                        <div>
+
+                            <h3>
+                                <i class="fa-solid fa-chart-column"></i> Flood Impact Summary
+                            </h3>
+
+                            <p>
+                                Spatial features detected within the flood extent.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="map-summary-grid">
+
+
+                        <!-- FLOOD AREA -->
+
+                        <div class="map-summary-card">
+
+                            <div class="summary-card-icon flood-summary">
+                                <i class="fa-solid fa-water"></i>
+                            </div>
+
+                            <div>
+
+                                <span>Flood Affected Area</span>
+
+                                <strong>
+                        18.7 km²
+                    </strong>
+
+                                <small>
+                        Detected water expansion
+                    </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SETTLEMENTS -->
+
+                        <div class="map-summary-card">
+
+                            <div class="summary-card-icon settlement-summary">
+                                <i class="fa-solid fa-house"></i>
+                            </div>
+
+                            <div>
+
+                                <span>Affected Settlements</span>
+
+                                <strong>
+                        42
+                    </strong>
+
+                                <small>
+                        Settlements inside flood zone
+                    </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ROADS -->
+
+                        <div class="map-summary-card">
+
+                            <div class="summary-card-icon road-summary">
+                                <i class="fa-solid fa-road"></i>
+                            </div>
+
+                            <div>
+
+                                <span>Affected Roads</span>
+
+                                <strong>
+                        31.4 km
+                    </strong>
+
+                                <small>
+                        Road segments affected
+                    </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- AGRICULTURE -->
+
+                        <div class="map-summary-card">
+
+                            <div class="summary-card-icon agriculture-summary">
+                                <i class="fa-solid fa-wheat-awn"></i>
+                            </div>
+
+                            <div>
+
+                                <span>Affected Agriculture</span>
+
+                                <strong>
+                        12.6 km²
+                    </strong>
+
+                                <small>
+                        Agricultural land affected
+                    </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         MAP INFORMATION
+    ================================================== -->
+
+                <div class="map-information">
+
+                    <div class="map-info-icon">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                Flood extent visualization
+            </strong>
+
+                        <p>
+                            The red shaded region represents the detected flood extent. Settlements, roads and agricultural areas can be enabled or disabled using the layer controls above. In the final system, these layers will be generated from the Sentinel-1 flood detection results.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+     SETTLEMENTS PAGE
+===================================================== -->
+
+            <section id="settlements" class="page-section settlements-page">
+
+                <!-- PAGE HEADER -->
+
+                <div class="settlements-header">
+
+                    <div>
+
+                        <p class="breadcrumb">
+                            Disaster Management
+                            <span>/</span> Settlements
+                        </p>
+
+                        <h2>Settlements</h2>
+
+                        <p class="settlements-subtitle">
+                            Identify and analyze settlements affected by the detected flood extent.
+                        </p>
+
+                    </div>
+
+                    <div class="settlements-status">
+
+                        <span class="status-dot"></span> Analysis Available
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         ANALYSIS INFORMATION
+    ================================================== -->
+
+                <div class="settlement-info-bar">
+
+                    <div class="settlement-info-item">
+
+                        <div class="settlement-info-icon location-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Analysis Location</span>
+
+                            <strong id="settlementLocation">
+                    Chennai, Tamil Nadu
+                </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settlement-info-item">
+
+                        <div class="settlement-info-icon date-icon">
+                            <i class="fa-regular fa-calendar"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Flood Event Date</span>
+
+                            <strong id="settlementDate">
+                    29 Sep 2026
+                </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settlement-info-item">
+
+                        <div class="settlement-info-icon flood-icon">
+                            <i class="fa-solid fa-water"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Flood Affected Area</span>
+
+                            <strong>
+                    18.7 km²
+                </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settlement-info-item">
+
+                        <div class="settlement-info-icon settlement-icon">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Affected Settlements</span>
+
+                            <strong id="totalSettlements">
+                    42
+                </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         SUMMARY CARDS
+    ================================================== -->
+
+                <div class="settlement-summary-grid">
+
+                    <!-- TOTAL -->
+
+                    <div class="settlement-stat-card">
+
+                        <div class="settlement-stat-icon total-settlement">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Total Settlements</span>
+
+                            <strong id="totalSettlementCard">
+                    42
+                </strong>
+
+                            <small>
+                    Detected in analysis region
+                </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- HIGH RISK -->
+
+                    <div class="settlement-stat-card">
+
+                        <div class="settlement-stat-icon high-risk">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+
+                        <div>
+
+                            <span>High Risk</span>
+
+                            <strong id="highRiskCount">
+                    14
+                </strong>
+
+                            <small>
+                    Significant flood exposure
+                </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MODERATE -->
+
+                    <div class="settlement-stat-card">
+
+                        <div class="settlement-stat-icon moderate-risk">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Moderate Risk</span>
+
+                            <strong id="moderateRiskCount">
+                    16
+                </strong>
+
+                            <small>
+                    Partial flood exposure
+                </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LOW -->
+
+                    <div class="settlement-stat-card">
+
+                        <div class="settlement-stat-icon low-risk">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <div>
+
+                            <span>Low Risk</span>
+
+                            <strong id="lowRiskCount">
+                    12
+                </strong>
+
+                            <small>
+                    Limited flood exposure
+                </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         SETTLEMENT MAP
+    ================================================== -->
+
+                <div class="settlement-map-card">
+
+                    <div class="settlement-map-header">
+
+                        <div>
+
+                            <h3>
+                                <i class="fa-solid fa-map-location-dot"></i> Affected Settlement Map
+                            </h3>
+
+                            <p>
+                                Spatial distribution of settlements inside the detected flood extent.
+                            </p>
+
+                        </div>
+
+
+                        <div class="settlement-map-legend">
+
+                            <span>
+                    <i class="legend-dot high"></i>
+                    High
+                </span>
+
+                            <span>
+                    <i class="legend-dot moderate"></i>
+                    Moderate
+                </span>
+
+                            <span>
+                    <i class="legend-dot low"></i>
+                    Low
+                </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="settlementMap" class="settlement-map"></div>
+
+                </div>
+
+
+                <!-- =================================================
+         SETTLEMENT TABLE
+    ================================================== -->
+
+                <div class="settlement-table-card">
+
+                    <div class="settlement-table-header">
+
+                        <div>
+
+                            <h3>
+                                <i class="fa-solid fa-list"></i> Affected Settlement Details
+                            </h3>
+
+                            <p>
+                                Settlements identified within or near the detected flood zone.
+                            </p>
+
+                        </div>
+
+
+                        <div class="settlement-search">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input type="text" id="settlementSearch" placeholder="Search settlement...">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table class="settlement-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Settlement</th>
+
+                                    <th>Location</th>
+
+                                    <th>Flood Exposure</th>
+
+                                    <th>Affected Area</th>
+
+                                    <th>Risk Level</th>
+
+                                    <th>Status</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="settlementTableBody">
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Settlement 01</strong>
+                                    </td>
+
+                                    <td>
+                                        13.105° N, 80.240° E
+                                    </td>
+
+                                    <td>
+                                        86%
+                                    </td>
+
+                                    <td>
+                                        2.4 km²
+                                    </td>
+
+                                    <td>
+                                        <span class="risk-badge high">
+                                High
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="affected-status">
+                                <span></span> Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Settlement 02</strong>
+                                    </td>
+
+                                    <td>
+                                        13.090° N, 80.270° E
+                                    </td>
+
+                                    <td>
+                                        71%
+                                    </td>
+
+                                    <td>
+                                        1.8 km²
+                                    </td>
+
+                                    <td>
+                                        <span class="risk-badge high">
+                                High
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="affected-status">
+                                <span></span> Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Settlement 03</strong>
+                                    </td>
+
+                                    <td>
+                                        13.075° N, 80.290° E
+                                    </td>
+
+                                    <td>
+                                        54%
+                                    </td>
+
+                                    <td>
+                                        1.2 km²
+                                    </td>
+
+                                    <td>
+                                        <span class="risk-badge moderate">
+                                Moderate
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="affected-status">
+                                <span></span> Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Settlement 04</strong>
+                                    </td>
+
+                                    <td>
+                                        13.115° N, 80.295° E
+                                    </td>
+
+                                    <td>
+                                        42%
+                                    </td>
+
+                                    <td>
+                                        0.9 km²
+                                    </td>
+
+                                    <td>
+                                        <span class="risk-badge moderate">
+                                Moderate
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="affected-status">
+                                <span></span> Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Settlement 05</strong>
+                                    </td>
+
+                                    <td>
+                                        13.065° N, 80.245° E
+                                    </td>
+
+                                    <td>
+                                        21%
+                                    </td>
+
+                                    <td>
+                                        0.4 km²
+                                    </td>
+
+                                    <td>
+                                        <span class="risk-badge low">
+                                Low
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="affected-status">
+                                <span></span> Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         INFORMATION BOX
+    ================================================== -->
+
+                <div class="settlement-note">
+
+                    <div class="settlement-note-icon">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                Settlement impact analysis
+            </strong>
+
+                        <p>
+                            Settlements are identified by comparing their spatial locations with the detected flood extent. Risk levels are based on the percentage of settlement area exposed to the detected flood region.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =====================================================
+     ROADS PAGE
+===================================================== -->
+
+            <section id="roads" class="page-section roads-page">
+
+                <!-- PAGE HEADER -->
+                <div class="roads-header">
+
+                    <div>
+                        <p class="breadcrumb">
+                            Disaster Management
+                            <span>/</span> Roads
+                        </p>
+
+                        <h2>Roads</h2>
+
+                        <p class="roads-subtitle">
+                            Identify roads affected by the detected flood extent.
+                        </p>
+                    </div>
+
+                    <div class="roads-status">
+                        <span class="status-dot"></span> Analysis Available
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         ANALYSIS INFORMATION
+    ================================================== -->
+
+                <div class="road-info-bar">
+
+                    <div class="road-info-item">
+
+                        <div class="road-info-icon location-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div>
+                            <span>Analysis Location</span>
+                            <strong id="roadLocation">
+                    Chennai, Tamil Nadu
+                </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="road-info-item">
+
+                        <div class="road-info-icon date-icon">
+                            <i class="fa-regular fa-calendar"></i>
+                        </div>
+
+                        <div>
+                            <span>Flood Event Date</span>
+                            <strong id="roadDate">
+                    29 Sep 2026
+                </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="road-info-item">
+
+                        <div class="road-info-icon flood-icon">
+                            <i class="fa-solid fa-water"></i>
+                        </div>
+
+                        <div>
+                            <span>Affected Road Length</span>
+                            <strong id="affectedRoadLength">
+                    24.6 km
+                </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="road-info-item">
+
+                        <div class="road-info-icon road-icon">
+                            <i class="fa-solid fa-road"></i>
+                        </div>
+
+                        <div>
+                            <span>Affected Roads</span>
+                            <strong id="affectedRoadCount">
+                    18
+                </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         SUMMARY CARDS
+    ================================================== -->
+
+                <div class="road-summary-grid">
+
+                    <!-- TOTAL ROADS -->
+
+                    <div class="road-stat-card">
+
+                        <div class="road-stat-icon total-road">
+                            <i class="fa-solid fa-road"></i>
+                        </div>
+
+                        <div>
+                            <span>Detected Roads</span>
+
+                            <strong>
+                    64
+                </strong>
+
+                            <small>
+                    Roads in analysis region
+                </small>
+                        </div>
+
+                    </div>
+
+
+                    <!-- HIGH IMPACT -->
+
+                    <div class="road-stat-card">
+
+                        <div class="road-stat-icon high-road">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+
+                        <div>
+                            <span>Severely Affected</span>
+
+                            <strong id="severeRoadCount">
+                    7
+                </strong>
+
+                            <small>
+                    Major flood exposure
+                </small>
+                        </div>
+
+                    </div>
+
+
+                    <!-- PARTIAL -->
+
+                    <div class="road-stat-card">
+
+                        <div class="road-stat-icon moderate-road">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </div>
+
+                        <div>
+                            <span>Partially Affected</span>
+
+                            <strong>
+                    11
+                </strong>
+
+                            <small>
+                    Partial flood exposure
+                </small>
+                        </div>
+
+                    </div>
+
+
+                    <!-- SAFE -->
+
+                    <div class="road-stat-card">
+
+                        <div class="road-stat-icon safe-road">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <div>
+                            <span>Unaffected</span>
+
+                            <strong>
+                    46
+                </strong>
+
+                            <small>
+                    Outside detected flood zone
+                </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         ROAD MAP
+    ================================================== -->
+
+                <div class="road-map-card">
+
+                    <div class="road-map-header">
+
+                        <div>
+
+                            <h3>
+                                <i class="fa-solid fa-map-location-dot"></i> Flood-Affected Road Map
+                            </h3>
+
+                            <p>
+                                Roads intersecting the detected flood extent.
+                            </p>
+
+                        </div>
+
+
+                        <div class="road-map-legend">
+
+                            <span>
+                    <i class="road-line severe"></i>
+                    Severely Affected
+                </span>
+
+                            <span>
+                    <i class="road-line moderate"></i>
+                    Partially Affected
+                </span>
+
+                            <span>
+                    <i class="road-line safe"></i>
+                    Unaffected
+                </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="roadMap" class="road-map"></div>
+
+                </div>
+
+
+                <!-- =================================================
+         ROAD TABLE
+    ================================================== -->
+
+                <div class="road-table-card">
+
+                    <div class="road-table-header">
+
+                        <div>
+
+                            <h3>
+                                <i class="fa-solid fa-list"></i> Affected Road Details
+                            </h3>
+
+                            <p>
+                                Roads identified inside or near the detected flood zone.
+                            </p>
+
+                        </div>
+
+
+                        <div class="road-search">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input type="text" id="roadSearch" placeholder="Search road...">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table class="road-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Road</th>
+
+                                    <th>Road Type</th>
+
+                                    <th>Total Length</th>
+
+                                    <th>Affected Length</th>
+
+                                    <th>Exposure</th>
+
+                                    <th>Impact</th>
+
+                                    <th>Status</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="roadTableBody">
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Road 01</strong>
+                                    </td>
+
+                                    <td>
+                                        Main Road
+                                    </td>
+
+                                    <td>
+                                        5.8 km
+                                    </td>
+
+                                    <td>
+                                        3.4 km
+                                    </td>
+
+                                    <td>
+                                        59%
+                                    </td>
+
+                                    <td>
+                                        <span class="road-impact severe">
+                                Severe
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="road-status affected">
+                                <span></span> Flood Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Road 02</strong>
+                                    </td>
+
+                                    <td>
+                                        Highway
+                                    </td>
+
+                                    <td>
+                                        8.2 km
+                                    </td>
+
+                                    <td>
+                                        4.1 km
+                                    </td>
+
+                                    <td>
+                                        50%
+                                    </td>
+
+                                    <td>
+                                        <span class="road-impact severe">
+                                Severe
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="road-status affected">
+                                <span></span> Flood Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Road 03</strong>
+                                    </td>
+
+                                    <td>
+                                        Local Road
+                                    </td>
+
+                                    <td>
+                                        3.6 km
+                                    </td>
+
+                                    <td>
+                                        1.3 km
+                                    </td>
+
+                                    <td>
+                                        36%
+                                    </td>
+
+                                    <td>
+                                        <span class="road-impact moderate">
+                                Moderate
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="road-status affected">
+                                <span></span> Flood Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Road 04</strong>
+                                    </td>
+
+                                    <td>
+                                        Residential
+                                    </td>
+
+                                    <td>
+                                        2.9 km
+                                    </td>
+
+                                    <td>
+                                        0.8 km
+                                    </td>
+
+                                    <td>
+                                        28%
+                                    </td>
+
+                                    <td>
+                                        <span class="road-impact moderate">
+                                Moderate
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="road-status affected">
+                                <span></span> Flood Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>Road 05</strong>
+                                    </td>
+
+                                    <td>
+                                        Local Road
+                                    </td>
+
+                                    <td>
+                                        4.2 km
+                                    </td>
+
+                                    <td>
+                                        0.4 km
+                                    </td>
+
+                                    <td>
+                                        10%
+                                    </td>
+
+                                    <td>
+                                        <span class="road-impact low">
+                                Low
+                            </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="road-status partial">
+                                <span></span> Partially Affected
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         INFORMATION NOTE
+    ================================================== -->
+
+                <div class="road-note">
+
+                    <div class="road-note-icon">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                Road impact analysis
+            </strong>
+
+                        <p>
+                            Road segments are analyzed by comparing their geographic locations with the detected flood extent. The affected length and exposure percentage indicate how much of each road segment overlaps with the flood region.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+
+
+            <!-- =====================================================
+     AGRICULTURE PAGE
+====================================================== -->
+
+            <section id="agriculture" class="page-section secondary-page">
+
+                <!-- PAGE HEADER -->
+                <div class="secondary-page-header">
+
+                    <div>
+                        <span class="page-eyebrow">
+                DISASTER RISK ANALYSIS
+            </span>
+
+                        <h1>
+                            Agricultural Impact Analysis
+                        </h1>
+
+                        <p>
+                            Analyze flood exposure across agricultural land and identify areas requiring immediate attention.
+                        </p>
+                    </div>
+
+                    <div class="analysis-status">
+                        <span class="status-dot"></span> Analysis Complete
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         ANALYSIS INFORMATION
+    ================================================== -->
+
+                <div class="agri-analysis-info">
+
+                    <div class="agri-info-box">
+                        <span>Location</span>
+                        <strong>Chennai, Tamil Nadu</strong>
+                    </div>
+
+                    <div class="agri-info-box">
+                        <span>Flood Event</span>
+                        <strong>30 September 2026</strong>
+                    </div>
+
+                    <div class="agri-info-box">
+                        <span>Flood Affected Area</span>
+                        <strong>42.8 km²</strong>
+                    </div>
+
+                    <div class="agri-info-box">
+                        <span>Agricultural Area</span>
+                        <strong>86.4 km²</strong>
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         SUMMARY CARDS
+    ================================================== -->
+
+                <div class="agri-stat-grid">
+
+                    <!-- TOTAL -->
+                    <div class="agri-stat-card">
+
+                        <div class="agri-stat-icon green">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+
+                        <div>
+                            <span>Total Agricultural Area</span>
+                            <strong>86.4 km²</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- AFFECTED -->
+                    <div class="agri-stat-card">
+
+                        <div class="agri-stat-icon blue">
+                            <i class="fa-solid fa-water"></i>
+                        </div>
+
+                        <div>
+                            <span>Flood Affected</span>
+                            <strong>42.8 km²</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- SEVERE -->
+                    <div class="agri-stat-card">
+
+                        <div class="agri-stat-icon red">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+
+                        <div>
+                            <span>Severe Impact</span>
+                            <strong>24.6 km²</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- MODERATE -->
+                    <div class="agri-stat-card">
+
+                        <div class="agri-stat-icon orange">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </div>
+
+                        <div>
+                            <span>Moderate Impact</span>
+                            <strong>18.2 km²</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         AGRICULTURAL FLOOD MAP
+    ================================================== -->
+
+                <div class="agri-card">
+
+                    <div class="agri-card-header">
+
+                        <div>
+
+                            <h2>
+                                Agricultural Flood Map
+                            </h2>
+
+                            <p>
+                                Spatial distribution of agricultural land affected by the detected flood.
+                            </p>
+
+                        </div>
+
+
+                        <div class="agri-map-legend">
+
+                            <span>
+                    <i class="legend-circle agricultural"></i>
+                    Agricultural Land
+                </span>
+
+                            <span>
+                    <i class="legend-circle flood"></i>
+                    Flood Extent
+                </span>
+
+                            <span>
+                    <i class="legend-circle severe"></i>
+                    Severe Impact
+                </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MAP -->
+                    <div id="agricultureMap" class="agriculture-map"></div>
+
+                </div>
+
+
+                <!-- =================================================
+         AGRICULTURAL IMPACT TABLE
+    ================================================== -->
+
+                <div class="agri-card">
+
+                    <div class="agri-card-header">
+
+                        <div>
+
+                            <h2>
+                                Agricultural Impact Details
+                            </h2>
+
+                            <p>
+                                Flood exposure detected across agricultural zones.
+                            </p>
+
+                        </div>
+
+
+                        <div class="agri-search">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input type="text" id="agricultureSearch" placeholder="Search zone...">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="agri-table-wrapper">
+
+                        <table class="agri-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Zone</th>
+
+                                    <th>Land Type</th>
+
+                                    <th>Total Area</th>
+
+                                    <th>Affected Area</th>
+
+                                    <th>Exposure</th>
+
+                                    <th>Impact</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="agricultureTableBody">
+
+                                <tr>
+
+                                    <td>
+                                        Agricultural Zone A
+                                    </td>
+
+                                    <td>
+                                        Paddy Field
+                                    </td>
+
+                                    <td>
+                                        32.5 km²
+                                    </td>
+
+                                    <td>
+                                        18.4 km²
+                                    </td>
+
+                                    <td>
+                                        57%
+                                    </td>
+
+                                    <td>
+                                        <span class="agri-risk severe">
+                                Severe
+                            </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Agricultural Zone B
+                                    </td>
+
+                                    <td>
+                                        Crop Land
+                                    </td>
+
+                                    <td>
+                                        24.8 km²
+                                    </td>
+
+                                    <td>
+                                        12.2 km²
+                                    </td>
+
+                                    <td>
+                                        49%
+                                    </td>
+
+                                    <td>
+                                        <span class="agri-risk severe">
+                                Severe
+                            </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Agricultural Zone C
+                                    </td>
+
+                                    <td>
+                                        Vegetable Farm
+                                    </td>
+
+                                    <td>
+                                        15.6 km²
+                                    </td>
+
+                                    <td>
+                                        7.4 km²
+                                    </td>
+
+                                    <td>
+                                        47%
+                                    </td>
+
+                                    <td>
+                                        <span class="agri-risk moderate">
+                                Moderate
+                            </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Agricultural Zone D
+                                    </td>
+
+                                    <td>
+                                        Mixed Agriculture
+                                    </td>
+
+                                    <td>
+                                        8.2 km²
+                                    </td>
+
+                                    <td>
+                                        3.1 km²
+                                    </td>
+
+                                    <td>
+                                        38%
+                                    </td>
+
+                                    <td>
+                                        <span class="agri-risk moderate">
+                                Moderate
+                            </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Agricultural Zone E
+                                    </td>
+
+                                    <td>
+                                        Plantation
+                                    </td>
+
+                                    <td>
+                                        5.3 km²
+                                    </td>
+
+                                    <td>
+                                        1.7 km²
+                                    </td>
+
+                                    <td>
+                                        32%
+                                    </td>
+
+                                    <td>
+                                        <span class="agri-risk low">
+                                Low
+                            </span>
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+         AI RECOMMENDATIONS
+    ================================================== -->
+
+                <div class="agri-recommendation-card">
+
+                    <div class="agri-recommendation-header">
+
+                        <div class="agri-title-area">
+
+                            <div class="agri-ai-icon">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+
+                            <div>
+
+                                <span class="agri-eyebrow">
+                        AI-ASSISTED DECISION SUPPORT
+                    </span>
+
+                                <h2>
+                                    Agriculture Recommendations
+                                </h2>
+
+                                <p>
+                                    Recommended actions based on detected agricultural flood exposure.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="ai-badge">
+
+                            <i class="fa-solid fa-robot"></i> AI Analysis
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- RECOMMENDATIONS WILL BE GENERATED HERE -->
+
+                    <div id="agricultureRecommendations" class="agri-recommendation-grid"></div>
+
+                </div>
+
+
+                <!-- =================================================
+         IMPACT NOTE
+    ================================================== -->
+
+                <div class="agri-impact-note">
+
+                    <div class="agri-note-icon">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                Agricultural Impact Analysis
+            </strong>
+
+                        <p>
+                            Agricultural impact is estimated by comparing detected flood extent with agricultural land. The results can support crop-damage assessment, field inspection and disaster-response planning.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section id="reports" class="page-section secondary-page">
+                <div class="empty-page">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <h2>Reports</h2>
+                    <p>Flood analysis reports will appear here.</p>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Application JS -->
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>

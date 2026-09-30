@@ -1,0 +1,98 @@
+# ==============================
+# Python
+# ==============================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# ==============================
+# Environment Variables
+# ==============================
+
+.env
+.env.*
+!.env.example
+
+# ==============================
+# FastAPI / Backend
+# ==============================
+
+*.log
+logs/
+
+# ==============================
+# Uploaded Satellite Images
+# ==============================
+
+uploads/
+data/
+*.tif
+*.tiff
+*.jp2
+*.h5
+
+# ==============================
+# Generated Flood Results
+# ==============================
+
+outputs/
+results/
+processed/
+flood_masks/
+*.geojson
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+
+# ==============================
+# Jupyter Notebook
+# ==============================
+
+.ipynb_checkpoints/
+
+# ==============================
+# VS Code
+# ==============================
+
+.vscode/
+*.code-workspace
+
+# ==============================
+# OS Files
+# ==============================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==============================
+# Testing / Coverage
+# ==============================
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==============================
+# Database
+# ==============================
+
+*.db
+*.sqlite3
+
+# ==============================
+# Temporary Files
+# ==============================
+
+*.tmp
+*.temp
+*.bak

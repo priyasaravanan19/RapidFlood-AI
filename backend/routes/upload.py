@@ -13,7 +13,7 @@ MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB
 CHUNK_SIZE = 1024 * 1024  # 1 MB
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-UPLOADS_DIR = BASE_DIR / "uploads"
+UPLOADS_DIR = Path("/tmp/uploads")
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
